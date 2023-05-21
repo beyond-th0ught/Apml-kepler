@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import keplerGlReducer from "kepler.gl/reducers";
 import { createStore, combineReducers, applyMiddleware } from "redux";
 import { taskMiddleware } from "react-palm/tasks";
 import { Provider, useDispatch } from "react-redux";
 import KeplerGl from "kepler.gl";
-import { addDataToMap } from "kepler.gl/actions";
+import { addDataToMap, updateMap, VisStateActions } from "kepler.gl/actions";
 import useSwr from "swr";
+import VehicalDataTable from "./VehicalDataTable";
 
 const reducers = combineReducers({
   keplerGl: keplerGlReducer,
@@ -94,6 +95,8 @@ function Map() {
       rows: data3.data,
     };
 
+ 
+
     // branch
     const response4 = await fetch(
       "https://script.googleusercontent.com/a/macros/agarwalpackers.com/echo?user_content_key=-leOnDhCzDiH7cp16YoPHn1ATj42pQys2s_HzYzF-h7P-9Pz0xDeEazv-5akCg4uMWIk2y1pJXahhaNRFE7-9RpzjK5AXF3COJmA1Yb3SEsKFZqtv3DaNYcMrmhZHmUMi80zadyHLKCzuoJ5WTSD9188tqLxoWbKVeS6iIHTYzJXoFFnRBLEn5qlD60My1U7FwUQwBDfl8spceukbWTFZQJeJmFZJvEyLReoJnAAtfrPvgXAAEU5tQJzMcwQzXoIfp5DtHnGESHNeXgmLLIU4g&lib=MSXPsUDFHcyUQDHE2QNy1JbLLe_nYFSPD"
@@ -143,7 +146,6 @@ function Map() {
     console.log(dataMain);
     return dataMain;
   });
-  console.log(data);
   React.useEffect(() => {
     if (data) {
       dispatch(
@@ -674,6 +676,9 @@ function Map() {
               },
               layerBlending: "normal",
               splitMaps: [],
+              mapClick: (e) => {
+                console.log("Click ", e)
+              },
               animationConfig: {
                 currentTime: null,
                 speed: 1,
@@ -712,7 +717,51 @@ function Map() {
     }
   }, [dispatch, data]);
 
+  const [VehicaleData,setVehicaleData]=useState({})
+  const FetchVehicaleData = async()=>{
+    const response3 = await fetch(
+      "https://script.google.com/macros/s/AKfycbw8Lz1tD_ar-Fa9irk8RhZxWIc8urdB7QyBigErWpX5exsSgLdgg_kPI10lYBSXzyr8/exec"
+    );
+    const data3 = await response3.json();
+
+    const newData3 = {
+      fields: [
+        { name: "LAT", format: "", type: "string" },
+        { name: "LON", format: "", type: "string" },
+        { name: "icon", format: "", type: "string" },
+        { name: "Vname ", format: "", type: "string" },
+        { name: "Dttime", format: "", type: "string" },
+        { name: "Speed", format: "", type: "string" },
+        { name: "Odo", format: "", type: "string" },
+        { name: "Angle", format: "", type: "string" },
+        { name: "Ignition", format: "", type: "string" },
+        { name: "Batlevel ", format: "", type: "string" },
+        { name: "Location", format: "", type: "string" },
+        { name: "Haltinghours", format: "", type: "string" },
+        { name: "Lat-Lngt", format: "", type: "string" },
+        { name: "Halt/Running ", format: "", type: "string" },
+        { name: "VEHICLE TYPE", format: "", type: "string" },
+        { name: "GAADI MALIK", format: "", type: "string" },
+        { name: "ROUTE ", format: "", type: "string" },
+        { name: "status ", format: "", type: "string" },
+        { name: "VT ", format: "", type: "string" },
+        { name: "latd ", format: "", type: "string" },
+        { name: "lond", format: "", type: "string" },
+      ],
+      rows: data3.data,
+    };
+    setVehicaleData(newData3)
+  }
+  useEffect(()=>{
+    FetchVehicaleData()
+  },[dispatch, data])
   return (
+    <div className="relative">
+    {/* <div style={{background: "red", position: "absolute", zIndex: 1000, top: "50%", right: "50%"}} onClick={()=> {
+      dispatch(
+        updateMap({latitude: 33.87455775, longitude: 75.0440257, width: 800, height: 1200, zoom: 13})
+      )
+    }}>Click</div> */}
     <KeplerGl
       id="MAP"
       mapboxApiAccessToken={
@@ -721,5 +770,7 @@ function Map() {
       width={window.innerWidth}
       height={window.innerHeight}
     />
+    <VehicalDataTable VehicaleData={VehicaleData} />
+    </div>
   );
 }
