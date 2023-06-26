@@ -5,12 +5,21 @@ import Select from 'react-select';
 
 const DataTable = ({VehicaleData, setShow}) => {
   const dispatch = useDispatch();
-  const set = new Set([3, 2, 15,0,1, 4, 17, 14])
+  console.log("heyyy Vehicale Data",VehicaleData);
+  const set = new Set([3, 2, 15,0,1])
   //'At delivery', 'At pickup', 'Enroute for delivery', 'Empty Run', 'Available','MXL','SXL'
   const tableData = [
 
-    {label: "At delivery", value: "At delivery"},
-    {label: "At pickup", value: "At pickup"}
+    {label: "At delivery", value:"At delivery" },
+    {label: "At pickup", value: "At pickup" },
+    {label: "INTRANSIT", value: "INTRANSIT" },
+    {label: "UNLOADING", value: "UNLOADING" },
+    {label: "EMPTY RUN", value: "EMPTY RUN" },
+    {label: "LOADING", value: "LOADING" },
+    {label: "AVAILABLE", value: "AVAILABLE" },
+    {label: "AVAILABLE HUB", value: "AVAILABLE HUB" },
+    {label: "MAINTENANCE", value: "MAINTENANCE" },
+    {label: "OFF DUTY", value: "OFF DUTY" }
   ];
 
   const proccessedFieldData = (Data) => {
@@ -34,15 +43,16 @@ const DataTable = ({VehicaleData, setShow}) => {
 
     return []
   }
-  const [fields, setFields] = useState(proccessedFieldData(VehicaleData.fields))
+  const [fields, setFields] = useState(["Destination","Status", "VNumber","Type","GM"])
   const [Rows, setRow] = useState(proccessedRowsData(VehicaleData.rows))
   const [filteredData, setFilteredData] = useState([]);
   const [search, setSearch] = useState('');
   const deferredSearch = useDeferredValue(search);
   const onHandleFilter = () => {
-      const searchDataResult = Rows.filter((val, index) => {
-        return `${val.join(" ")}`.toLowerCase().includes(deferredSearch.toLowerCase())
+      const searchDataResult = VehicaleData.filter((val, index) => {
+        return val.search().toLowerCase().includes(deferredSearch.toLowerCase())
       });
+      console.log("Handle get called");
       setFilteredData(searchDataResult)
   }
 
@@ -57,7 +67,7 @@ const DataTable = ({VehicaleData, setShow}) => {
           <tr className="border-b">
             
             <td
-                className="cursor-pointer  text-black"
+                className="cursor-pointer font-bold border-[#FFA500] border-2  text-[#16FF00]"
                 style={{ paddingLeft: "15px", paddingRight: "15px" }}
                 onClick={() => {
                   dispatch(
@@ -79,21 +89,39 @@ const DataTable = ({VehicaleData, setShow}) => {
 
             </td>
             {val.map((Data, index) => {
-              return <td className="text-sm px-5 border-x-2 text-center py-2">{Data}</td>;
+              return <td className="text-sm px-5 font-bold border-2 border-[#FFA500] text-[#FF00FF] text-center py-2">{Data}</td>;
             })}
           </tr>
         );
       })
   }
 
+  const customStyles = {
+    option: (defaultStyles, state) => ({
+      ...defaultStyles,
+      color: state.isSelected ? "#212529" : "#000",
+      backgroundColor: state.isSelected ? "#00FF00" : "#00FF00",
+    }),
+
+    control: (defaultStyles) => ({
+      ...defaultStyles,
+      backgroundColor: "white",
+      color: "#212529",
+      padding: "1px",
+      border: "none",
+      boxShadow: "none",
+    }),
+    singleValue: (defaultStyles) => ({ ...defaultStyles, color: "#fff" }),
+  };
+
   return (
     <>
 
     <div className="h-14 flex items-center text-sm font-bold justify-between px-5 bg-[#29323C] rounded-tl-xl text-white sticky top-0">
-        <div className="text-[15px]">
-          Vehical DataTable
+        <div className="text-[15px] text-[#7BFF00]">
+        SCREEN
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center ">
           {/* <input className="mx-2 p-2 px-4 rounded-xl shadow-xl font-normal text-black" 
             list="datalistId"
             placeholder="Enter Vehical Name"
@@ -105,10 +133,10 @@ const DataTable = ({VehicaleData, setShow}) => {
           <Select
               
               isMulti
-              name="colors"
+              name="Screen Data"
               options={tableData}
               className="basic-multi-select"
-              classNamePrefix="select"
+              styles={customStyles}
               onChange={(e)=> {
                 setSearch(e[0].label)
               }}
@@ -126,18 +154,29 @@ const DataTable = ({VehicaleData, setShow}) => {
         </div>
 
     </div>
-    <table className="rounded-xl">
+    <table className="rounded-xl bg-black bg-opacity-70">
       <thead className="sticky top-[10.2%] shadow-xl bg-white">
-        <tr className="border">
-          <th> Map </th>
+        <tr className="border-2  bg-[#FF0000] border-[#00FF00]">
+          {/* <th className="border-2 border-[#00FF00]"> Map </th> */}
           {fields.length > 0 &&
             fields.map((val, index) => {
-              return <th className="text-sm px-5 py-1 border-x">{val.name}</th>;
+              return <th className="text-sm px-5 py-1 border-[#00FF00] border-2">{val}</th>;
             })}
         </tr>
       </thead>
-      <tbody>
-        {filteredData.length > 0 ? RenderRowsOnTable(filteredData) : RenderRowsOnTable(Rows)}
+      <tbody className="">
+        {/* {filteredData.length > 0 ? RenderRowsOnTable(filteredData) : RenderRowsOnTable(Rows)} */}
+        {
+        filteredData && filteredData.length > 0 ? (filteredData.map((vData,i)=>{
+          return(
+            vData.react()
+          )
+        })) : (VehicaleData.map((vData,i)=>{
+          return(
+            vData.react()
+          )
+        }))
+        }
       </tbody>
     </table>
     </>
@@ -147,10 +186,10 @@ const DataTable = ({VehicaleData, setShow}) => {
 function VehicalDataTable(props) {
   const [show, setShow] = useState(false);
   return (
-    <div className="absolute top-3 right-3 z-50 bg-white w-[75%] rounded-xl absolute">
+    <div className="absolute top-3 right-3  z-50 w-[75%] rounded-xl absolute">
       
       {
-        show ? (<div className="w-full h-[550px] overflow-auto rounded-xl"><DataTable {...props} setShow={setShow} /></div>) : (
+        show ? (<div className="w-full h-[550px] overflow-auto rounded-xl "><DataTable {...props} setShow={setShow} /></div>) : (
           <div onClick={()=> setShow((pre) => !pre)} className="flex justify-center items-center shadow-md h-8 w-8 bg-[#29323C] text-[#6A7485] text-sm border-none absolute top-10 right-10 cursor-pointer">
             OD
           </div>

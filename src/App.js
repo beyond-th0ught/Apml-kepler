@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import keplerGlReducer from "kepler.gl/reducers";
 import { createStore, combineReducers, applyMiddleware } from "redux";
 import { taskMiddleware } from "react-palm/tasks";
@@ -8,6 +8,7 @@ import { addDataToMap, updateMap, VisStateActions } from "kepler.gl/actions";
 import useSwr from "swr";
 import VehicalDataTable from "./VehicalDataTable";
 import FetchData from "./FetchData";
+import { AvailableOddContext } from "./Context/AvailableOddContext";
 
 const reducers = combineReducers({
   keplerGl: keplerGlReducer,
@@ -765,7 +766,7 @@ const FetchVehicaleData2 = async()=>{
       );
       
     const data3 = await response3.json();
-      console.log(data3);
+      console.log("data 3"+data3);
     const newData3 = {
       fields: [
         { name: "LAT", format: "", type: "string" },
@@ -800,13 +801,12 @@ const FetchVehicaleData2 = async()=>{
     FetchVehicaleData()
     FetchVehicaleData2()
   },[dispatch, data])
+
+  const AvailableODDData = useContext(AvailableOddContext)
+  
+
   return (
     <div className="relative">
-    {/* <div style={{background: "red", position: "absolute", zIndex: 1000, top: "50%", right: "50%"}} onClick={()=> {
-      dispatch(
-        updateMap({latitude: 33.87455775, longitude: 75.0440257, width: 800, height: 1200, zoom: 13})
-      )
-    }}>Click</div> */}
     <KeplerGl
       id="MAP"
       mapboxApiAccessToken={
@@ -816,7 +816,7 @@ const FetchVehicaleData2 = async()=>{
       height={window.innerHeight}
     />
     <VehicalDataTable VehicaleData={VehicaleData} />
-    <FetchData VehicaleData={OddData} />
+    <FetchData VehicaleData={AvailableODDData.AvailableOdd} />
     </div>
   );
 }

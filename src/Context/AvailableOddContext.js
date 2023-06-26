@@ -4,7 +4,7 @@ import { createContext, useEffect, useState } from "react";
 export const AvailableOddContext = createContext()
 
 const AvailableOddContextProvide =({children}) =>{
-        const [AvailableOdd, setAvailableOdd] = useState(0);
+        const [AvailableOdd, setAvailableOdd] = useState([]);
         const headers = {
             Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NDkyNDgyODksInVzZXJJZCI6ImNlZWMxMzkwLWUyZjUtNDZkMC1iOTBlLWNiN2NkNDEwNzU3MiIsImVtYWlsIjoiaW50ZWdyYXRpb25AYXBtbC5jb20iLCJtb2JpbGVOdW1iZXIiOiI5MDAwMDAwMDA0Iiwib3JnSWQiOiI0MDUyYWIyNC0wNTQzLTRjZDQtYjUxNy05ZTc4ZWZlZTRmZWQiLCJuYW1lIjoiQVBNTCBJbnRlZ3JhdGlvbiIsIm9yZ1R5cGUiOiJGTEVFVF9PV05FUiIsImlzR29kIjpmYWxzZSwicG9ydGFsVHlwZSI6ImJhc2ljIn0.WV8p9lLMRft2DfrzikLpp_zSJIwrBEp0U2Oy4IWkp6w`,
           };
@@ -18,13 +18,29 @@ const AvailableOddContextProvide =({children}) =>{
                 Status: val.status,
                 VNumber: vehicleData.vehicleRegistrationNumber,
                 Type: vehicleData.vehicleLoadType?.name,
-                GM: vehicleData.customFields.length > 6 ? vehicleData.customFields[6].value : ""
+                GM: vehicleData.customFields.length > 6 ? vehicleData.customFields[6].value : "",
+
+                search: function () {
+                    return (`${this.Destination}${this.Status}${this.VNumber}${this.Type}${this.GM}`)
+                },
+                react: function () {
+                    return (
+                        <tr>
+                            <td>{this.Destination}</td>
+                            <td>{this.Status}</td>
+                            <td>{this.VNumber}</td>
+                            <td>{this.Type}</td>
+                            <td>{this.GM}</td>
+                        </tr>
+                    )
+                }
             }
-            // console.log(response);
             return response
+            // console.log(response);
+            // setAvailableOdd(response)
             
             })
-            // console.log(processData)
+            setAvailableOdd(processData)
             }
         useEffect(()=>{
 
@@ -33,7 +49,7 @@ const AvailableOddContextProvide =({children}) =>{
         
     return(
         <AvailableOddContext.Provider
-        value={{}}
+        value={{AvailableOdd: AvailableOdd}}
         >
             {
                 children
