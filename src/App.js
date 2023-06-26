@@ -7,6 +7,7 @@ import KeplerGl from "kepler.gl";
 import { addDataToMap, updateMap, VisStateActions } from "kepler.gl/actions";
 import useSwr from "swr";
 import VehicalDataTable from "./VehicalDataTable";
+import FetchData from "./FetchData";
 
 const reducers = combineReducers({
   keplerGl: keplerGlReducer,
@@ -20,6 +21,7 @@ export default function App() {
       <Map />
     </Provider>
   );
+  
 }
 
 function Map() {
@@ -718,6 +720,7 @@ function Map() {
   }, [dispatch, data]);
 
   const [VehicaleData,setVehicaleData]=useState({})
+const [OddData, setOddData] = useState({})
   const FetchVehicaleData = async()=>{
     const response3 = await fetch(
       "https://script.google.com/macros/s/AKfycbw8Lz1tD_ar-Fa9irk8RhZxWIc8urdB7QyBigErWpX5exsSgLdgg_kPI10lYBSXzyr8/exec"
@@ -752,8 +755,50 @@ function Map() {
     };
     setVehicaleData(newData3)
   }
+
+
+
+const FetchVehicaleData2 = async()=>{
+    const response3 = await fetch(
+      `https://script.googleusercontent.com/macros/echo?user_content_key=I7c9PdPkbo7M-nlqkQ6jXZ5ht-MlJScH2FF1Rg8KLFZ4S0aRMKe-7mwQtvIPWGIAwrza0buRXoKD-zif2ZNXSQcrBZeeKtBVm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnPX4R1Zh2buejVcpfcq_qp0JvcZpEDNXDPYfXbxulYuCPmDfKtbLNt1MpypSX4Y_lMCbS0XpJX0zzTTvYfqylK7To9I5_ZRxpw&lib=MQvvGdKa3ds3GnVCM256wj4DBSEx397KY`
+      
+      );
+      
+    const data3 = await response3.json();
+      console.log(data3);
+    const newData3 = {
+      fields: [
+        { name: "LAT", format: "", type: "string" },
+        { name: "LON", format: "", type: "string" },
+        { name: "icon", format: "", type: "string" },
+        { name: "V NO. ", format: "", type: "string" },
+        { name: "COUNT", format: "", type: "string" },
+        { name: "Speed", format: "", type: "string" },
+        { name: "Odo", format: "", type: "string" },
+        { name: "Angle", format: "", type: "string" },
+        { name: "Ignition", format: "", type: "string" },
+        { name: "Batlevel ", format: "", type: "string" },
+        { name: "Location", format: "", type: "string" },
+        { name: "Haltinghours", format: "", type: "string" },
+        { name: "Lat-Lngt", format: "", type: "string" },
+        { name: "Halt/Running ", format: "", type: "string" },
+        { name: "VEHICLE TYPE", format: "", type: "string" },
+        { name: "MALIK", format: "", type: "string" },
+        { name: "ROUTE ", format: "", type: "string" },
+        { name: "status ", format: "", type: "string" },
+        { name: "VT ", format: "", type: "string" },
+        { name: "latd ", format: "", type: "string" },
+        { name: "lond", format: "", type: "string" },
+      ],
+      rows: data3.data,
+    };
+    console.log(newData3);
+    setOddData(newData3)
+  }
+
   useEffect(()=>{
     FetchVehicaleData()
+    FetchVehicaleData2()
   },[dispatch, data])
   return (
     <div className="relative">
@@ -771,6 +816,7 @@ function Map() {
       height={window.innerHeight}
     />
     <VehicalDataTable VehicaleData={VehicaleData} />
+    <FetchData VehicaleData={OddData} />
     </div>
   );
 }

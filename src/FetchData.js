@@ -1,10 +1,17 @@
 import React, { useDeferredValue, useEffect, useState } from "react";
 import { updateMap } from "kepler.gl/actions";
 import { useDispatch } from "react-redux";
+import Select from 'react-select';
 
 const DataTable = ({VehicaleData, setShow}) => {
   const dispatch = useDispatch();
-  const set = new Set([0, 1, 3, 5, 13, 14, 15, 17])
+  const set = new Set([3, 2, 15,0,1, 4, 17, 14])
+  //'At delivery', 'At pickup', 'Enroute for delivery', 'Empty Run', 'Available','MXL','SXL'
+  const tableData = [
+
+    {label: "At delivery", value: "At delivery"},
+    {label: "At pickup", value: "At pickup"}
+  ];
 
   const proccessedFieldData = (Data) => {
     if(Data && Data.length > 0){
@@ -87,12 +94,30 @@ const DataTable = ({VehicaleData, setShow}) => {
           Vehical DataTable
         </div>
         <div className="flex items-center">
-          <input className="mx-2 p-2 px-4 rounded-xl shadow-xl font-normal text-black" 
+          {/* <input className="mx-2 p-2 px-4 rounded-xl shadow-xl font-normal text-black" 
+            list="datalistId"
             placeholder="Enter Vehical Name"
             onChange={(e)=> {
                 const value = e.target.value;
-                setSearch(value)
-            }} />
+                setSearch(e.target.value)
+            }} /> */}
+
+          <Select
+              
+              isMulti
+              name="colors"
+              options={tableData}
+              className="basic-multi-select"
+              classNamePrefix="select"
+              onChange={(e)=> {
+                setSearch(e[0].label)
+              }}
+          />
+          <datalist id="datalistId">
+            {tableData.map((item, index) => (
+              <option key={index} value={item} />
+            ))}
+          </datalist>
           <div onClick={()=> setShow((pre) => !pre)} className="cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
               <path d="M18 6L6 18M6 6l12 12"></path>
@@ -104,7 +129,7 @@ const DataTable = ({VehicaleData, setShow}) => {
     <table className="rounded-xl">
       <thead className="sticky top-[10.2%] shadow-xl bg-white">
         <tr className="border">
-          <th className="text-sm px-5 py-1 border-x font-bold">MAP</th>
+          <th> Map </th>
           {fields.length > 0 &&
             fields.map((val, index) => {
               return <th className="text-sm px-5 py-1 border-x">{val.name}</th>;
@@ -122,12 +147,12 @@ const DataTable = ({VehicaleData, setShow}) => {
 function VehicalDataTable(props) {
   const [show, setShow] = useState(false);
   return (
-    <div className="absolute top-3 right-3 z-[50] bg-white w-[75%] rounded-xl absolute">
+    <div className="absolute top-3 right-3 z-50 bg-white w-[75%] rounded-xl absolute">
       
       {
         show ? (<div className="w-full h-[550px] overflow-auto rounded-xl"><DataTable {...props} setShow={setShow} /></div>) : (
-          <div onClick={()=> setShow((pre) => !pre)} className="flex justify-center items-center shadow-md h-8 w-8 bg-[#29323C] text-[#6A7485] text-sm border-none absolute top-0 right-10 cursor-pointer">
-            VT
+          <div onClick={()=> setShow((pre) => !pre)} className="flex justify-center items-center shadow-md h-8 w-8 bg-[#29323C] text-[#6A7485] text-sm border-none absolute top-10 right-10 cursor-pointer">
+            OD
           </div>
         ) 
       }

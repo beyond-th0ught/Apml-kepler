@@ -1,10 +1,12 @@
 import React, { useDeferredValue, useEffect, useState } from "react";
 import { updateMap } from "kepler.gl/actions";
 import { useDispatch } from "react-redux";
+import {AvailableOddContext } from "./Context/AvailableOddContext";
+
 
 const DataTable = ({VehicaleData, setShow}) => {
   const dispatch = useDispatch();
-  const set = new Set([0, 1, 3, 5, 13, 14, 15, 17])
+  const set = new Set([0, 1, 3, 14, 15, 17, 18])
 
   const proccessedFieldData = (Data) => {
     if(Data && Data.length > 0){
@@ -43,12 +45,18 @@ const DataTable = ({VehicaleData, setShow}) => {
     onHandleFilter()
   }, [deferredSearch])
 
+
+  
   const RenderRowsOnTable = (RowDataOnTable) => {
       const SplitDataTo = RowDataOnTable.slice(0, 100);
       return SplitDataTo.length > 0 && SplitDataTo.map((val, index) => {
         return (
           <tr className="border-b">
-            
+            {val.map((Data, index) => {
+              
+              return <td className="text-sm px-5 border-x-2 text-center py-2">{Data}</td>;
+
+            })}
             <td
                 className="cursor-pointer  text-black"
                 style={{ paddingLeft: "15px", paddingRight: "15px" }}
@@ -71,9 +79,6 @@ const DataTable = ({VehicaleData, setShow}) => {
               </svg>
 
             </td>
-            {val.map((Data, index) => {
-              return <td className="text-sm px-5 border-x-2 text-center py-2">{Data}</td>;
-            })}
           </tr>
         );
       })
@@ -104,7 +109,6 @@ const DataTable = ({VehicaleData, setShow}) => {
     <table className="rounded-xl">
       <thead className="sticky top-[10.2%] shadow-xl bg-white">
         <tr className="border">
-          <th className="text-sm px-5 py-1 border-x font-bold">MAP</th>
           {fields.length > 0 &&
             fields.map((val, index) => {
               return <th className="text-sm px-5 py-1 border-x">{val.name}</th>;
@@ -118,16 +122,15 @@ const DataTable = ({VehicaleData, setShow}) => {
     </>
   );
 };
-
-function VehicalDataTable(props) {
+function AvailableOdd(propsNew) {
   const [show, setShow] = useState(false);
   return (
-    <div className="absolute top-3 right-3 z-[50] bg-white w-[75%] rounded-xl absolute">
+    <div className="absolute top-3 right-3 z-50 bg-white w-[75%] rounded-xl">
       
       {
-        show ? (<div className="w-full h-[550px] overflow-auto rounded-xl"><DataTable {...props} setShow={setShow} /></div>) : (
+        show ? (<div className="w-full h-[550px] overflow-auto rounded-xl"><DataTable {...propsNew} setShow={setShow} /></div>) : (
           <div onClick={()=> setShow((pre) => !pre)} className="flex justify-center items-center shadow-md h-8 w-8 bg-[#29323C] text-[#6A7485] text-sm border-none absolute top-0 right-10 cursor-pointer">
-            VT
+            AO
           </div>
         ) 
       }
@@ -135,4 +138,4 @@ function VehicalDataTable(props) {
   );
 }
 
-export default VehicalDataTable;
+export default AvailableOdd;
