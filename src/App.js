@@ -7,8 +7,13 @@ import KeplerGl from "kepler.gl";
 import { addDataToMap, updateMap, VisStateActions } from "kepler.gl/actions";
 import useSwr from "swr";
 import VehicalDataTable from "./VehicalDataTable";
-import FetchData from "./FetchData";
-import { AvailableOddContext } from "./Context/AvailableOddContext";
+import Table from "./Component/Table";
+import SxlTable from "./Component/SxlTable";
+import TrailerTable from "./Component/Trailer";
+import { AvailableContextProvider } from "./Context/AvailableOddContext";
+import { SXLContextProvider } from "./Context/SXLContext";
+import { StatusContext, StatusContextProvider } from './Context/StatusContext';
+import { TrailerContextProvider } from './Context/TrailerContext';
 
 const reducers = combineReducers({
   keplerGl: keplerGlReducer,
@@ -19,7 +24,15 @@ const store = createStore(reducers, {}, applyMiddleware(taskMiddleware));
 export default function App() {
   return (
     <Provider store={store}>
+      <StatusContextProvider>
+      <AvailableContextProvider>
+      <SXLContextProvider>
+      <TrailerContextProvider>
       <Map />
+      </TrailerContextProvider>
+      </SXLContextProvider>
+      </AvailableContextProvider>
+      </StatusContextProvider>
     </Provider>
   );
   
@@ -146,7 +159,6 @@ function Map() {
     };
 
     dataMain.push(newData, newData2, newData3, newData4, newData5);
-    console.log(dataMain);
     return dataMain;
   });
   React.useEffect(() => {
@@ -215,7 +227,7 @@ function Map() {
                     },
                     isVisible: true,
                     visConfig: {
-                      radius: 42.2,
+                      radius: 5,
                       fixedRadius: false,
                       opacity: 0.8,
                       colorRange: {
@@ -269,7 +281,7 @@ function Map() {
                     },
                     isVisible: true,
                     visConfig: {
-                      radius: 26.6,
+                      radius: .6,
                       fixedRadius: false,
                       opacity: 0.8,
                       colorRange: {
@@ -442,74 +454,81 @@ function Map() {
                   },
                 },
                 {
-                  id: "iza6pd",
-                  type: "icon",
-                  config: {
-                    dataId: "data_3",
-                    label: "VEHICLE2",
-                    color: [248, 149, 112],
-                    highlightColor: [252, 242, 26, 255],
-                    columns: {
-                      lat: "LAT",
-                      lng: "LON",
-                      icon: "icon",
-                      altitude: null,
+                  "id": "vmrfj4od",
+                  "type": "point",
+                  "config": {
+                    "dataId": "data_3",
+                    "label": "VEHICLE2",
+                    "color": [
+                      248,
+                      149,
+                      112
+                    ],
+                    "highlightColor": [
+                      252,
+                      242,
+                      26,
+                      255
+                    ],
+                    "columns": {
+                      "lat": "LAT",
+                      "lng": "LON",
+                      "altitude": null
                     },
-                    isVisible: true,
-                    visConfig: {
-                      radius: 2,
-                      fixedRadius: false,
-                      opacity: 0.8,
-                      colorRange: {
-                        name: "Global Warming",
-                        type: "sequential",
-                        category: "Uber",
-                        colors: [
+                    "isVisible": true,
+                    "visConfig": {
+                      "radius": 9.7,
+                      "fixedRadius": false,
+                      "opacity": 0.8,
+                      "outline": false,
+                      "thickness": 2,
+                      "strokeColor": null,
+                      "colorRange": {
+                        "name": "Global Warming",
+                        "type": "sequential",
+                        "category": "Uber",
+                        "colors": [
                           "#5A1846",
                           "#900C3F",
                           "#C70039",
                           "#E3611C",
                           "#F1920E",
-                          "#FFC300",
-                        ],
+                          "#FFC300"
+                        ]
                       },
-                      radiusRange: [0, 24.1],
+                      "strokeColorRange": {
+                        "name": "Global Warming",
+                        "type": "sequential",
+                        "category": "Uber",
+                        "colors": [
+                          "#5A1846",
+                          "#900C3F",
+                          "#C70039",
+                          "#E3611C",
+                          "#F1920E",
+                          "#FFC300"
+                        ]
+                      },
+                      "radiusRange": [
+                        0,
+                        24.1
+                      ],
+                      "filled": true
                     },
-                    hidden: false,
-                    textLabel: [
-                      {
-                        field: {
-                          name: "VEHICLE TYPE",
-                          type: "string",
-                        },
-                        color: [255, 255, 255],
-                        size: 15,
-                        offset: [0, 0],
-                        anchor: "end",
-                        alignment: "center",
-                      },
-                      {
-                        field: {
-                          name: "Vname",
-                          type: "string",
-                        },
-                        color: [255, 255, 255],
-                        size: 17,
-                        offset: [0, 0],
-                        anchor: "start",
-                        alignment: "center",
-                      },
-                    ],
+                    "hidden": false,
+                    "textLabel": []
                   },
-                  visualChannels: {
-                    colorField: {
-                      name: "VEHICLE TYPE",
-                      type: "string",
+                  "visualChannels": {
+                    "colorField": {
+                      "name": "VEHICLE TYPE",
+                      "type": "string"
                     },
-                    colorScale: "ordinal",
-                    sizeField: null,
-                    sizeScale: "linear",
-                  },
+                    "colorScale": "ordinal",
+                    "strokeColorField": null,
+                    "strokeColorScale": "quantile",
+                    "sizeField": null,
+                    "sizeScale": "linear"
+                  }
                 },
                 {
                   id: "9fcecn5",
@@ -721,7 +740,6 @@ function Map() {
   }, [dispatch, data]);
 
   const [VehicaleData,setVehicaleData]=useState({})
-const [OddData, setOddData] = useState({})
   const FetchVehicaleData = async()=>{
     const response3 = await fetch(
       "https://script.google.com/macros/s/AKfycbw8Lz1tD_ar-Fa9irk8RhZxWIc8urdB7QyBigErWpX5exsSgLdgg_kPI10lYBSXzyr8/exec"
@@ -757,53 +775,15 @@ const [OddData, setOddData] = useState({})
     setVehicaleData(newData3)
   }
 
-
-
-const FetchVehicaleData2 = async()=>{
-    const response3 = await fetch(
-      `https://script.googleusercontent.com/macros/echo?user_content_key=I7c9PdPkbo7M-nlqkQ6jXZ5ht-MlJScH2FF1Rg8KLFZ4S0aRMKe-7mwQtvIPWGIAwrza0buRXoKD-zif2ZNXSQcrBZeeKtBVm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnPX4R1Zh2buejVcpfcq_qp0JvcZpEDNXDPYfXbxulYuCPmDfKtbLNt1MpypSX4Y_lMCbS0XpJX0zzTTvYfqylK7To9I5_ZRxpw&lib=MQvvGdKa3ds3GnVCM256wj4DBSEx397KY`
-      
-      );
-      
-    const data3 = await response3.json();
-      console.log("data 3"+data3);
-    const newData3 = {
-      fields: [
-        { name: "LAT", format: "", type: "string" },
-        { name: "LON", format: "", type: "string" },
-        { name: "icon", format: "", type: "string" },
-        { name: "V NO. ", format: "", type: "string" },
-        { name: "COUNT", format: "", type: "string" },
-        { name: "Speed", format: "", type: "string" },
-        { name: "Odo", format: "", type: "string" },
-        { name: "Angle", format: "", type: "string" },
-        { name: "Ignition", format: "", type: "string" },
-        { name: "Batlevel ", format: "", type: "string" },
-        { name: "Location", format: "", type: "string" },
-        { name: "Haltinghours", format: "", type: "string" },
-        { name: "Lat-Lngt", format: "", type: "string" },
-        { name: "Halt/Running ", format: "", type: "string" },
-        { name: "VEHICLE TYPE", format: "", type: "string" },
-        { name: "MALIK", format: "", type: "string" },
-        { name: "ROUTE ", format: "", type: "string" },
-        { name: "status ", format: "", type: "string" },
-        { name: "VT ", format: "", type: "string" },
-        { name: "latd ", format: "", type: "string" },
-        { name: "lond", format: "", type: "string" },
-      ],
-      rows: data3.data,
-    };
-    console.log(newData3);
-    setOddData(newData3)
-  }
-
   useEffect(()=>{
     FetchVehicaleData()
-    FetchVehicaleData2()
   },[dispatch, data])
 
-  const AvailableODDData = useContext(AvailableOddContext)
-  
+  //   const [componentToShow, setComponentToShow] = useState('A');
+
+  // const handleComponentClick = (component) => {
+  //   setComponentToShow(component);
+  // };
 
   return (
     <div className="relative">
@@ -814,9 +794,12 @@ const FetchVehicaleData2 = async()=>{
       }
       width={window.innerWidth}
       height={window.innerHeight}
+
     />
-    <VehicalDataTable VehicaleData={VehicaleData} />
-    <FetchData VehicaleData={AvailableODDData.AvailableOdd} />
+    <VehicalDataTable  VehicaleData={VehicaleData} />
+    <Table/>
+    <SxlTable/>
+    {/* <TrailerTable/> */}
     </div>
   );
 }

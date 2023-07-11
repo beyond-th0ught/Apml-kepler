@@ -5,7 +5,6 @@ import Select from 'react-select';
 
 const DataTable = ({VehicaleData, setShow}) => {
   const dispatch = useDispatch();
-  console.log("heyyy Vehicale Data",VehicaleData);
   const set = new Set([3, 2, 15,0,1])
   //'At delivery', 'At pickup', 'Enroute for delivery', 'Empty Run', 'Available','MXL','SXL'
   const tableData = [
@@ -52,7 +51,6 @@ const DataTable = ({VehicaleData, setShow}) => {
       const searchDataResult = VehicaleData.filter((val, index) => {
         return val.search().toLowerCase().includes(deferredSearch.toLowerCase())
       });
-      console.log("Handle get called");
       setFilteredData(searchDataResult)
   }
 
